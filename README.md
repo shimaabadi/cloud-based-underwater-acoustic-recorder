@@ -1,1 +1,1 @@
-# cloud-based-underwater-acoustic-recorder
+# Cloud Based Underwater Acoustic Recorder
