@@ -3,14 +3,13 @@
 Created on Mon Jan 15 14:24:07 2018
 
 @author: Derek DeLizo
-Monday:0
-Sunday: 6
 
-Calculate power needed for recording
-Setup data connection
-Get IP address
+Description:
+Reads in arugements from the command line then builds a schedule to record audio.
+Command format: python Scheduler.py [Schedule] [Start Time] [End Time]
 
-Commands: 
+Note:
+Script must be run from the command line.
 
 """
 
@@ -31,12 +30,16 @@ SILENT_CHUNKS = 3 * 44100 / 1024  # about 3sec
 FORMAT = pyaudio.paInt16
 FRAME_MAX_VALUE = 2 ** 15 - 1
 NORMALIZE_MINUS_ONE_dB = 10 ** (-1.0 / 20)
-RATE = 44100
+RATE = 
 CHANNELS = 1
 TRIM_APPEND = RATE / 4
 
-def record_to_file(path,stop):
+def record_to_file(stop):
     "Records from the microphone and outputs the resulting data to 'path'"
+    today = dt.date.today()
+    currTime = dt.datetime.now()
+    currTime = dt.time(currTime.hour,currTime.minute)
+    path = 'test.wav'
     print ("Path: %s  StopTime: %s" % (path,stop))
     sample_width, data = record(stop)
     data = pack('<' + ('h'*len(data)), *data)
@@ -124,51 +127,75 @@ def trim(data_all):
 
     return copy.deepcopy(data_all[_from:(_to + 1)])
 
-def hello(stuff,stoptime):
-    time = stoptime.split(':')
-    stop = dt.time(int(time[0]),int(time[1]))
-    now = dt.datetime.now()
-    now = dt.time(now.hour,now.minute)
-    while now != stop:
-        print stuff
-        now = dt.datetime.now()
-        now = dt.time(now.hour,now.minute)
-
 def monday(start,stop):
-    schedule.every().monday.at(start).do(record_to_file,'test.wav',stop)
+    schedule.every().monday.at(start).do(record_to_file,stop)
 
 def tuesday(start,stop):
-    schedule.every().saturday.at(start).do(hello,'tuesday',stop)
+    schedule.every().tuesday.at(start).do(record_to_file,stop)
 
 def wednesday(start,stop):
-    schedule.every().saturday.at(start).do(hello,'wednesday',stop)
+    schedule.every().wednesday.at(start).do(record_to_file,stop)
+    
+def thursday(start,stop):
+    schedule.every().thursday.at(start).do(record_to_file,stop)
 
 def friday(start,stop):
-    schedule.every().saturday.at(start).do(hello,'friday',stop)
+    schedule.every().friday.at(start).do(record_to_file,stop)
+
+def saturday(start,stop):
+    schedule.every().saturday.at(start).do(record_to_file,stop)
+
+def sunday(start,stop):
+    schedule.every().sunday.at(start).do(record_to_file,stop)
+
+def dayTokenizer(newSched):
+    x = 0
+    day = ''
+    scheduleToken = []
+    while x < len(newSched):
+        day = newSched[x]
+        if newSched[x] == 'T':
+            if x+1 >= len(newSched):
+                day = 'T'
+            elif newSched[x+1] == 'h':
+                    day = newSched[x] + newSched[x+1]
+                    newSched.remove(day[1])
+            else:
+                    day = newSched[x]
+
+        if newSched[x] == 'S':
+            if x+1 >= len(newSched):
+                day = 'S'
+            elif newSched[x+1] == 'n':
+                    day = newSched[x] + newSched[x+1]
+                    newSched.remove(day[1])
+            else:
+                    day = newSched[x]
+                    
+        scheduleToken.append(day)            
+        x+=1
+
+    return scheduleToken
 
 schedules = []
 options = {'M':monday,
            'T':tuesday,
            'W':wednesday,
-           'F':friday}
+           'Th':thursday,
+           'F':friday,
+           'S':saturday,
+           'Sn':sunday}
 
 commands = sys.argv
-newSched = commands[1]
+newSched = [i for i in commands[1]]
 startTime = commands[2]
 stopTime = commands[3]
 
+schedDays = dayTokenizer(newSched)
 
-
-for day in newSched:
-    options[day](startTime,stopTime)
+for token in schedDays:
+    options[token](startTime,stopTime)
 
 while True:
     schedule.run_pending()
-    time.sleep(1) 
-##record_to_file("thisshit.wav")
-
-##schedule.every().saturday.at("11:11").do(hello,'cats',"11:12")
-##
-
-
-
+    time.sleep(1)
