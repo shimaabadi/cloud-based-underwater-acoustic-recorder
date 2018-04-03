@@ -17,31 +17,28 @@ Version:        0.2
 import sys
 import configparser
 import schedule
+import recorder
 
 def monday(start, stop):
-    schedule.every().monday.at(start).do(record_to_file, stop)
+    schedule.every().monday.at(start).do(recorder.record_sample, stop)
 
 def tuesday(start, stop):
-    schedule.every().tuesday.at(start).do(record_to_file, stop)
+    schedule.every().tuesday.at(start).do(recorder.record_sample, stop)
 
 def wednesday(start, stop):
-    schedule.every().wednesday.at(start).do(record_to_file, stop)
+    schedule.every().wednesday.at(start).do(recorder.record_sample, stop)
 
 def thursday(start, stop):
-    schedule.every().thursday.at(start).do(record_to_file, stop)
+    schedule.every().thursday.at(start).do(recorder.record_sample, stop)
 
 def friday(start, stop):
-    schedule.every().friday.at(start).do(record_to_file, stop)
+    schedule.every().friday.at(start).do(recorder.record_sample, stop)
 
 def saturday(start, stop):
-    schedule.every().saturday.at(start).do(record_to_file, stop)
+    schedule.every().saturday.at(start).do(recorder.record_sample, stop)
 
 def sunday(start, stop):
-    schedule.every().sunday.at(start).do(record_to_file, stop)
-
-def record_to_file(stop):
-    # TODO: Implement this function
-    return None
+    schedule.every().sunday.at(start).do(recorder.record_sample, stop)
 
 def load_schedule(config: configparser.ConfigParser):
     '''Load a schedule from the configuration file and register it with the scheduler.'''
