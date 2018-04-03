@@ -30,7 +30,7 @@ SILENT_CHUNKS = 3 * 44100 / 1024  # about 3sec
 FORMAT = pyaudio.paInt16
 FRAME_MAX_VALUE = 2 ** 15 - 1
 NORMALIZE_MINUS_ONE_dB = 10 ** (-1.0 / 20)
-RATE = 
+RATE = 1
 CHANNELS = 1
 TRIM_APPEND = RATE / 4
 
@@ -53,19 +53,19 @@ def record_to_file(stop):
 
 def add_silence(snd_data, seconds):
     "Add silence to the start and end of 'snd_data' of length 'seconds' (float)"
-    r = array('h', [0 for i in xrange(int(seconds*RATE))])
+    r = array('h', [0 for i in range(int(seconds*RATE))])
     r.extend(snd_data)
-    r.extend([0 for i in xrange(int(seconds*RATE))])
+    r.extend([0 for i in range(int(seconds*RATE))])
     return r
 
 def record(stop):
     """
-    Record a word or words from the microphone and 
+    Record a word or words from the microphone and
     return the data as an array of signed shorts.
 
-    Normalizes the audio, trims silence from the 
-    start and end, and pads with 0.5 seconds of 
-    blank sound to make sure VLC et al can play 
+    Normalizes the audio, trims silence from the
+    start and end, and pads with 0.5 seconds of
+    blank sound to make sure VLC et al can play
     it without getting chopped off.
     """
     p = pyaudio.PyAudio()
@@ -90,7 +90,7 @@ def record(stop):
         now = dt.datetime.now()
         now = dt.time(now.hour,now.minute)
 
-    
+
     sample_width = p.get_sample_size(FORMAT)
     stream.stop_stream()
     stream.close()
@@ -135,7 +135,7 @@ def tuesday(start,stop):
 
 def wednesday(start,stop):
     schedule.every().wednesday.at(start).do(record_to_file,stop)
-    
+
 def thursday(start,stop):
     schedule.every().thursday.at(start).do(record_to_file,stop)
 
@@ -171,8 +171,8 @@ def dayTokenizer(newSched):
                     newSched.remove(day[1])
             else:
                     day = newSched[x]
-                    
-        scheduleToken.append(day)            
+
+        scheduleToken.append(day)
         x+=1
 
     return scheduleToken
