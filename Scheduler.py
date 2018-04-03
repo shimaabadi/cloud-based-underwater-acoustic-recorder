@@ -177,6 +177,21 @@ def dayTokenizer(newSched):
 
     return scheduleToken
 
+def _test():
+    '''Module-level testing code.'''
+    now = dt.datetime.now()
+    stop_m = now.minute
+    stop_h = now.hour
+
+    print('Recording...')
+    stop = str(stop_h) + ':' + str(stop_m + 1)
+    record_to_file(stop)
+    print('Recording completed.')
+
+    return 0
+
+_test()
+
 schedules = []
 options = {'M':monday,
            'T':tuesday,

@@ -14,6 +14,7 @@ import datetime
 import copy
 import wave
 from datetime import datetime
+from datetime import time
 from sys import byteorder
 from array import array
 from struct import pack
@@ -59,10 +60,11 @@ def record(stop):
         frames_per_buffer=CHUNK_SIZE)
 
     r = array('h')
-    now = datetime.now()
-    now = datetime.time(now.hour, now.minute)
+    now = datetime.time(datetime.now())
     stop = stop.split(':')
-    stopTime = datetime.time(int(stop[0]), int(stop[1]))
+    stopTime = time(int(stop[0]), int(stop[1]))
+    
+
     while now < stopTime:
         # little endian, signed short
         snd_data = array('h', stream.read(CHUNK_SIZE))
@@ -70,7 +72,7 @@ def record(stop):
             snd_data.byteswap()
         r.extend(snd_data)
         now = datetime.now()
-        now = datetime.time(now.hour, now.minute)
+        now = time(now.hour, now.minute)
 
 
     sample_width = p.get_sample_size(FORMAT)
