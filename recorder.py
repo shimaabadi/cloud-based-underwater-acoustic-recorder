@@ -45,7 +45,7 @@ def record_sample(stop):
     wf.close()
 
 def record(stop):
-    """
+    '''
     Record a word or words from the microphone and
     return the data as an array of signed shorts.
 
@@ -53,7 +53,7 @@ def record(stop):
     start and end, and pads with 0.5 seconds of
     blank sound to make sure VLC et al can play
     it without getting chopped off.
-    """
+    '''
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels=1, rate=SAMPLING_RATE,
         input=True, output=True,
@@ -63,7 +63,6 @@ def record(stop):
     now = datetime.time(datetime.now())
     stop = stop.split(':')
     stopTime = time(int(stop[0]), int(stop[1]))
-    
 
     while now < stopTime:
         # little endian, signed short
@@ -112,7 +111,7 @@ def trim(data_all):
     return copy.deepcopy(data_all[_from : (_to + 1)])
 
 def add_silence(snd_data, seconds):
-    "Add silence to the start and end of 'snd_data' of length 'seconds' (float)"
+    '''Add silence to the start and end of 'snd_data' of length 'seconds' (float)'''
     r = array('h', [0 for i in range(int(seconds * SAMPLING_RATE))])
     r.extend(snd_data)
     r.extend([0 for i in range(int(seconds * SAMPLING_RATE))])
