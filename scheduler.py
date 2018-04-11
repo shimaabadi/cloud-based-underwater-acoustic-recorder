@@ -60,10 +60,8 @@ def load_schedule(config: configparser.ConfigParser):
 
 def run_pending():
     schedule.run_pending()
-    if recorder.recording_succeeded:
-        timestamp = recorder.file_timestamp
-        recorder.file_timestamp = ''
-        recorder.recording_succeeded = False
+    timestamp = recorder.get_filepath()
+    if timestamp != None:
         return timestamp
     else:
         return ''

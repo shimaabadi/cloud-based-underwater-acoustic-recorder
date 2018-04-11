@@ -38,7 +38,7 @@ def record_sample(stop):
     now = datetime.now()
     datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
     timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
-    path = 'data/recording_' + datestamp + '_' + timestamp
+    path = 'data/recording_' + datestamp + '_' + timestamp + '.wav'
     print("Path: %s  StopTime: %s" % (path,stop))
     sample_width, data = record(stop)
     data = pack('<' + ('h' * len(data)), *data)
@@ -53,6 +53,15 @@ def record_sample(stop):
     print('Recording completed.')
     file_timestamp = path
     recording_succeeded = True
+
+def get_filepath():
+    if recording_succeeded:
+        timestamp = file_timestamp
+        file_timestamp = ''
+        recording_succeeded = False
+        return timestamp
+    else:
+        return None
 
 def record(stop):
     '''

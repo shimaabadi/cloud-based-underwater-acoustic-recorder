@@ -14,6 +14,7 @@ import os
 from azure.storage.blob import BlockBlobService
 
 def upload_recording(filename: str):
+    print('Uploading...')
     configpath = 'credentials.ini'
     config = configparser.ConfigParser()
     config.read(configpath)
