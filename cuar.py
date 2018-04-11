@@ -17,6 +17,7 @@ Version:        0.2
 import sys
 import configparser
 import scheduler
+import cloud
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -30,4 +31,6 @@ if __name__ == '__main__':
     scheduler.load_schedule(config)
 
     while True:
-        scheduler.run_pending()
+        file = scheduler.run_pending()
+        if file != '':
+            cloud.upload_recording(file)

@@ -28,11 +28,17 @@ FRAME_MAX_VALUE = 2 ** 15 - 1
 TRIM_APPEND = SAMPLING_RATE / 4
 THRESHOLD = 500
 
+file_timestamp = ''
+recording_succeeded = False
+
 def record_sample(stop):
     '''Begins recording a sample up to the designated stop time.'''
 
     # TODO: Update path to be configurable
-    path = 'test.wav'
+    now = datetime.now()
+    datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
+    timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
+    path = 'data/recording_' + datestamp + '_' + timestamp
     print("Path: %s  StopTime: %s" % (path,stop))
     sample_width, data = record(stop)
     data = pack('<' + ('h' * len(data)), *data)
@@ -43,6 +49,10 @@ def record_sample(stop):
     wf.setframerate(SAMPLING_RATE)
     wf.writeframes(data)
     wf.close()
+
+    print('Recording completed.')
+    file_timestamp = path
+    recording_succeeded = True
 
 def record(stop):
     '''
