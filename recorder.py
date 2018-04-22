@@ -51,10 +51,14 @@ def record_sample(stop):
     wf.close()
 
     print('Recording completed.')
+    global file_timestamp
     file_timestamp = path
+    global recording_succeeded
     recording_succeeded = True
 
 def get_filepath():
+    global file_timestamp
+    global recording_succeeded
     if recording_succeeded:
         timestamp = file_timestamp
         file_timestamp = ''
