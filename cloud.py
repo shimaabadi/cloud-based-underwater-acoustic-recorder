@@ -5,7 +5,7 @@ Purpose:        TODO
 
 Author:         Ryan Berge
 
-Last Updated:   April 11th, 2018
+Last Updated:   April 23rd, 2018
 Version:        0.2
 '''
 
@@ -25,7 +25,7 @@ def upload_recording(filename: str, config):
         credentials = configparser.ConfigParser()
         credentials.read(credential_path)
 
-        container = config.get('Blob', 'container')
+        container = config.get('Cloud', 'container')
 
         username = credentials.get('Azure', 'Username')
         password = credentials.get('Azure', 'Password')
@@ -44,13 +44,15 @@ def upload_recording(filename: str, config):
         # The local path to the file
         local_path = os.path.join(os.getcwd(), filename)
 
+        timestamp = os.path.basename(filename).split('.')[0]
+
         # Run 7zip to split the file into 512KB parts to be uploaded individually
         subprocess.run(["7z", "-v512k", "a", temp_path, local_path])
 
         # Upload all fileparts into azure blob storage
         for filename in os.listdir(temp_dir):
-            zip_path =os.path.join(temp_dir, filename)
-            output_path = os.path.join(os.path.basename(filename), filename)
+            zip_path = os.path.join(temp_dir, filename)
+            output_path = os.path.join(timestamp, filename)
             block_blob_service.create_blob_from_path(container, output_path, zip_path, None, None, False, progressCallback)
 
             #remove file after upload
@@ -62,11 +64,14 @@ def upload_recording(filename: str, config):
     except Exception as e:
         print('An exception occurred while uploading the file:')
         print(e)
+        return
+
+    print('Upload complete')
 
 def _test():
     config = configparser.ConfigParser()
     config.read('config.ini')
-    upload_recording('test.wav', config)
+    upload_recording('data/recording_2018-4-22_19-23-0.wav', config)
     pass
 
 if __name__ == '__main__':

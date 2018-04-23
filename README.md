@@ -6,3 +6,4 @@
 * Azure Python SDK
 * libffi-dev (required for azure)
 * p7zip-full
+* libav-tools

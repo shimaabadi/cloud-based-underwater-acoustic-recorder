@@ -1,3 +1,4 @@
 .vscode
 *.wav
 credentials.ini
+__pycache__/*

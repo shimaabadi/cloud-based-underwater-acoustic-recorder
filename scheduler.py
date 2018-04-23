@@ -5,7 +5,7 @@ Purpose:        Encapsulates the code necessary load a schedule from a configura
 
 Authors:        Ryan Berge, Derek DeLizo
 
-Last Updated:   April 6th, 2018
+Last Updated:   April 23rd, 2018
 Version:        0.2
 '''
 
@@ -67,7 +67,9 @@ def run_pending():
         return ''
 
 def _test():
-    pass
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    load_schedule(config)
 
 if __name__ == '__main__':
     _test()

@@ -5,7 +5,7 @@ Purpose:        Encapsulates the code necessary to record a sample from
 
 Authors:        Ryan Berge, Derek DeLizo
 
-Last Updated:   April 4th, 2018
+Last Updated:   April 23rd, 2018
 Version:        0.2
 '''
 
@@ -13,6 +13,7 @@ import pyaudio
 import datetime
 import copy
 import wave
+import os
 from datetime import datetime
 from datetime import time
 from sys import byteorder
@@ -21,7 +22,7 @@ from struct import pack
 
 # TODO: These should probably be saved in the config file
 FORMAT = pyaudio.paInt16
-SAMPLING_RATE = 48000
+SAMPLING_RATE = 5000
 CHUNK_SIZE = 1024
 NORMALIZE_MINUS_ONE_dB = 10 ** (-1.0 / 20)
 FRAME_MAX_VALUE = 2 ** 15 - 1
@@ -33,6 +34,8 @@ recording_succeeded = False
 
 def record_sample(stop):
     '''Begins recording a sample up to the designated stop time.'''
+
+    print('Beginning recording...')
 
     # TODO: Update path to be configurable
     now = datetime.now()
@@ -50,6 +53,8 @@ def record_sample(stop):
     wf.writeframes(data)
     wf.close()
 
+    os.system('avconv -i '+ path + '.wav  -y -ar ' + SAMPLING_RATE + ' ' + path + '.flac')
+
     print('Recording completed.')
     global file_timestamp
     file_timestamp = path
@@ -63,8 +68,11 @@ def get_filepath():
         timestamp = file_timestamp
         file_timestamp = ''
         recording_succeeded = False
+        print(timestamp)
         return timestamp
     else:
+        file_timestamp = ''
+        recording_succeeded = False
         return None
 
 def record(stop):
@@ -135,9 +143,9 @@ def trim(data_all):
 
 def add_silence(snd_data, seconds):
     '''Add silence to the start and end of 'snd_data' of length 'seconds' (float)'''
-    r = array('h', [0 for i in range(int(seconds * SAMPLING_RATE))])
+    r = array('h', [0 for _ in range(int(seconds * SAMPLING_RATE))])
     r.extend(snd_data)
-    r.extend([0 for i in range(int(seconds * SAMPLING_RATE))])
+    r.extend([0 for _ in range(int(seconds * SAMPLING_RATE))])
     return r
 
 def _test():
