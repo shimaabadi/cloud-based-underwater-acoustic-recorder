@@ -14,6 +14,7 @@ import datetime
 import copy
 import wave
 import os
+import configparser
 from datetime import datetime
 from datetime import time
 from sys import byteorder
@@ -37,27 +38,42 @@ def record_sample(stop):
 
     print('Beginning recording...')
 
+    try:
+        configpath = 'config.ini'
+        config = configparser.ConfigParser()
+        config.read(configpath)
+    except Exception as e:
+        print('There was an error reading the configuration file.')
+    
+    global SAMPLING_RATE
+    SAMPLING_RATE = config.get('Recording', 'sampling_rate')
+
     # TODO: Update path to be configurable
     now = datetime.now()
     datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
     timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
-    path = 'data/recording_' + datestamp + '_' + timestamp + '.wav'
+    path = 'data/recording_' + datestamp + '_' + timestamp
     print("Path: %s  StopTime: %s" % (path,stop))
     sample_width, data = record(stop)
     data = pack('<' + ('h' * len(data)), *data)
 
-    wf = wave.open(path, 'wb')
+    wf = wave.open(path + '.wav', 'wb')
     wf.setnchannels(1)
     wf.setsampwidth(sample_width)
     wf.setframerate(SAMPLING_RATE)
     wf.writeframes(data)
     wf.close()
 
-    os.system('avconv -i '+ path + '.wav  -y -ar ' + SAMPLING_RATE + ' ' + path + '.flac')
+    os.system('sox '+ path + '.wav ' + path + '.flac')
+    if os.path.isfile(path + '.flac'):
+        os.remove(path + '.wav')
+    else:
+        print('Recording failed.')
+        return
 
     print('Recording completed.')
     global file_timestamp
-    file_timestamp = path
+    file_timestamp = path + '.flac'
     global recording_succeeded
     recording_succeeded = True
 
@@ -154,10 +170,8 @@ def _test():
     stop_m = now.minute
     stop_h = now.hour
 
-    print('Recording...')
     stop = str(stop_h) + ':' + str(stop_m + 1)
     record_sample(stop)
-    print('Recording completed.')
 
     return 0
 

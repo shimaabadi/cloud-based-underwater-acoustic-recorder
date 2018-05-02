@@ -1,4 +1,6 @@
 .vscode
-*.wav
+data/*
 credentials.ini
 __pycache__/*
+*.wav
+*.flac

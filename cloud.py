@@ -71,7 +71,7 @@ def upload_recording(filename: str, config):
 def _test():
     config = configparser.ConfigParser()
     config.read('config.ini')
-    upload_recording('data/recording_2018-4-22_19-23-0.wav', config)
+    upload_recording('data/recording_2018-4-11_14-9-0.flac', config)
     pass
 
 if __name__ == '__main__':
