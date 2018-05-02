@@ -10,24 +10,25 @@ Purpose:        Cloud-Based Underwater Acoustic Recorder is a project with the
 
 Author:         Ryan Berge
 
-Last Updated:   April 6th, 2018
+Last Updated:   April 23rd, 2018
 Version:        0.2
 '''
 
-import sys
 import configparser
 import scheduler
+import cloud
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Usage: python3 cuar.py [configpath]')
-        exit(-1)
-
-    configpath = sys.argv[1]
-    config = configparser.ConfigParser()
-    config.read(configpath)
+    try:
+        configpath = 'config.ini'
+        config = configparser.ConfigParser()
+        config.read(configpath)
+    except Exception as e:
+        print('There was an error reading the configuration file.')
 
     scheduler.load_schedule(config)
 
     while True:
-        scheduler.run_pending()
+        file = scheduler.run_pending()
+        if file != '':
+            cloud.upload_recording(file, config)
