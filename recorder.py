@@ -5,7 +5,7 @@ Purpose:        Encapsulates the code necessary to record a sample from
 
 Authors:        Ryan Berge, Derek DeLizo
 
-Last Updated:   April 23rd, 2018
+Last Updated:   May 2nd, 2018
 Version:        0.2
 '''
 
