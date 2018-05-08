@@ -14,24 +14,31 @@ import schedule
 import configparser
 
 def monday(start, stop):
+    print('Scheduler: Adding a recording on Mondays from ', start, ' to ', stop)
     schedule.every().monday.at(start).do(recorder.record_sample, stop)
 
 def tuesday(start, stop):
+    print('Scheduler: Adding a recording on Tuesdays from ', start, ' to ', stop)
     schedule.every().tuesday.at(start).do(recorder.record_sample, stop)
 
 def wednesday(start, stop):
+    print('Scheduler: Adding a recording on Wednesdays from ', start, ' to ', stop)
     schedule.every().wednesday.at(start).do(recorder.record_sample, stop)
 
 def thursday(start, stop):
+    print('Scheduler: Adding a recording on Thursdays from ', start, ' to ', stop)
     schedule.every().thursday.at(start).do(recorder.record_sample, stop)
 
 def friday(start, stop):
+    print('Scheduler: Adding a recording on Fridays from ', start, ' to ', stop)
     schedule.every().friday.at(start).do(recorder.record_sample, stop)
 
 def saturday(start, stop):
+    print('Scheduler: Adding a recording on Saturdays from ', start, ' to ', stop)
     schedule.every().saturday.at(start).do(recorder.record_sample, stop)
 
 def sunday(start, stop):
+    print('Scheduler: Adding a recording on Sundays from ', start, ' to ', stop)
     schedule.every().sunday.at(start).do(recorder.record_sample, stop)
 
 def load_schedule(config: configparser.ConfigParser):

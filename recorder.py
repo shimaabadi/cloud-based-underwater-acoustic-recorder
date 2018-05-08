@@ -42,9 +42,9 @@ def record_sample(stop):
         configpath = 'config.ini'
         config = configparser.ConfigParser()
         config.read(configpath)
-    except Exception as e:
+    except Exception:
         print('There was an error reading the configuration file.')
-    
+
     global SAMPLING_RATE
     SAMPLING_RATE = config.get('Recording', 'sampling_rate')
 
