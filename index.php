@@ -1,4 +1,12 @@
 <html>
+<?php
+/*
+	To add:
+	Remove time
+	Add record time
+	View last file uploaded
+*/
+?>
 <style>
 .container {
 	border:2px solid #ccc;
@@ -6,6 +14,9 @@
 	height:50%;
 	overflow-y: scroll;
 	}
+.border{
+	padding: 70px;
+}
 </style>
 <?php
 	$maxcols = 5;
@@ -16,9 +27,9 @@
  </head>
  <body>
  <table width=100% height=100%>
- <col width="40%">
- <col width="20%">
- <col width="40%">
+ <col width="35%">
+ <col width="30%">
+ <col width="35%">
  <tr>
  <td>
 	<h1>Enter the Directory</h1></br>
@@ -27,8 +38,6 @@
 	<div class="container" id="DirList"></div>
  </td>
  <td>
- <button type="button" onclick="loadSchedule">Load Schedule</button>
- <div id="Schedule"></div>
  <table border=1 width=100%>
  <col width="10%">
  <col width="20%">
@@ -39,47 +48,26 @@
 	<th>Time</th>
  </tr>
  <?php
-	$ini = parse_ini_file("schedule.ini",true);
-	$days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-	$schedule = $ini['Schedule'];
-	foreach($days as $day){
-		echo "<tr>";
-		echo "<td><input type='checkbox'></td>";
-		echo "<td>".$day."</td>";
-		if(strlen($schedule[$day]) > 0){
-			$times = explode(',',$schedule[$day]);
-			echo "<td>";
-			foreach($times as $time){
-				$finalTime = '';
-				for($i = 1; $i < strlen($time) - 1;$i++){
-					if($time[$i] == " "){
-						$finalTime .= " - ";
-					} else {
-						$finalTime .= $time[$i];
-					}
-				}
-				echo $finalTime."<br>";
-			}
-			echo "</td>";
-		}
-		echo "</tr>";
-	}
-	echo "</table>";
-	/*
-	while($i != $maxcols){
-		echo "<tr>";
-		echo "<td><input type='checkbox' name='vehicle' value='$i'></td>";
-		echo "<td>MWF</td>";
-		echo "<td>12:00pm - 3:00pm</td>";
-		echo "</tr>";
-		$i++;
-	}
-	echo "</table>";
-	*/
-	
- ?> 
+	include 'getSchedule.php';
+ ?>
+ <br>
+ <button type="button" onclick="loadSchedule">Update Schedule</button>
  </td>
- <td></td>
+ <td>
+ <div class="border">
+ <form "method="post">
+	Sunday <input type="checkbox" name="check[]" id="check" value="sunday"><br>
+	Monday <input type="checkbox" name="check[]" id="check" value="monday"><br>
+	Tuesday <input type="checkbox" name="check[]" id="check" value="tuesday"><br>
+	Wednesday <input type="checkbox" name="check[]" id="check" value="wednesday"><br>
+	Thursday <input type="checkbox" name="check[]" id="check" value="thursday"><br>
+	Friday <input type="checkbox" name="check[]" id="check" value="friday"><br>
+	Saturday <input type="checkbox" name="check[]" id="check" value="saturday"><br>
+	<input type="time" name="Start" id="Start"><br>
+    <input type="submit" name="insert" value="insert"><br>
+ </form>
+ </div>
+ </td>
  </tr>
  <script>
  function test(){
