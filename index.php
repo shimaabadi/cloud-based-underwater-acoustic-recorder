@@ -55,16 +55,27 @@
  </td>
  <td>
  <div class="border">
- <form "method="post">
-	Sunday <input type="checkbox" name="check[]" id="check" value="sunday"><br>
-	Monday <input type="checkbox" name="check[]" id="check" value="monday"><br>
-	Tuesday <input type="checkbox" name="check[]" id="check" value="tuesday"><br>
-	Wednesday <input type="checkbox" name="check[]" id="check" value="wednesday"><br>
-	Thursday <input type="checkbox" name="check[]" id="check" value="thursday"><br>
-	Friday <input type="checkbox" name="check[]" id="check" value="friday"><br>
-	Saturday <input type="checkbox" name="check[]" id="check" value="saturday"><br>
-	<input type="time" name="Start" id="Start"><br>
-    <input type="submit" name="insert" value="insert"><br>
+ <form action="writeSchedule.php" method="post">
+	<input type="time" name="start" id="start"> to <input type="time" name="stop" id="stop">
+	<input type="submit" name="update" value="Update"><br>
+	<table>
+	<tr>
+		<td><input type="checkbox" name="check[]" id="check" value="monday">Monday</td>
+		<td><input type="checkbox" name="check[]" id="check" value="tuesday">Tuesday</td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="check[]" id="check" value="wednesday">Wednesday</td>
+		<td><input type="checkbox" name="check[]" id="check" value="thursday">Thursday</td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="check[]" id="check" value="friday">Friday</td>
+		<td><input type="checkbox" name="check[]" id="check" value="saturday">Saturday</td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="check[]" id="check" value="sunday">Sunday</td>
+		<td></td>
+	</tr>
+	</table>
  </form>
  </div>
  </td>
