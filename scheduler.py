@@ -41,7 +41,12 @@ def sunday(start, stop):
     print('Scheduler: Adding a recording on Sundays from ', start, ' to ', stop)
     schedule.every().sunday.at(start).do(recorder.record_sample, start, stop)
 
-def load_schedule(config: configparser.ConfigParser):
+def register_config(check_config, config):
+    checkin_frequency = config.getint('Cloud', 'checkin_frequency')
+    print('Scheduler: Registering config check-in every', checkin_frequency, 'minutes.')
+    schedule.every(checkin_frequency).seconds.do(check_config)
+
+def load_schedule(config: configparser.ConfigParser, check_config):
     '''Load a schedule from a configuration file and register it with the scheduler.'''
     schedule_map = {
         'monday' : monday,
@@ -67,6 +72,8 @@ def load_schedule(config: configparser.ConfigParser):
 
             schedule_map[o](start, stop)
 
+    register_config(check_config, config)
+
 def run_pending():
     schedule.run_pending()
     timestamp = recorder.get_filepath()
@@ -75,10 +82,13 @@ def run_pending():
     else:
         return ''
 
+def _dummy_config_check():
+    return
+
 def _test():
     config = configparser.ConfigParser()
     config.read('config.ini')
-    load_schedule(config)
+    load_schedule(config, _dummy_config_check)
 
 if __name__ == '__main__':
     _test()

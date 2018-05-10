@@ -1,9 +1,10 @@
 # Cloud Based Underwater Acoustic Recorder
 
 ### Dependencies
+## Python Modules
 * schedule
-* pyaudio
-* Azure Python SDK
-* libffi-dev (required for azure)
+* azure
+## System
 * p7zip-full
 * sox
+* arecord

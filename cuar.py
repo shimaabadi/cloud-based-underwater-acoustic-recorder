@@ -26,7 +26,7 @@ if __name__ == '__main__':
     except Exception as e:
         print('There was an error reading the configuration file.')
 
-    scheduler.load_schedule(config)
+    scheduler.load_schedule(config, cloud.check_config)
 
     while True:
         file = scheduler.run_pending()
