@@ -44,6 +44,7 @@ def sunday(start, stop):
 def register_config(check_config, config):
     checkin_frequency = config.getint('Cloud', 'checkin_frequency')
     print('Scheduler: Registering config check-in every', checkin_frequency, 'minutes.')
+    #TODO: Change to minutes before deployment
     schedule.every(checkin_frequency).seconds.do(check_config)
 
 def load_schedule(config: configparser.ConfigParser, check_config):

@@ -83,9 +83,7 @@ def check_config():
     blob_service = BlockBlobService(account_name=username, account_key=password)
 
     generator = blob_service.list_blobs('configuration')
-    config_blob = None
     for b in generator:
-        config_blob = b
         timestamp = b.properties.last_modified
         break
 

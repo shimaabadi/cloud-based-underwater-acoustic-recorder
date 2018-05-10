@@ -4,3 +4,4 @@ credentials.ini
 __pycache__/*
 *.wav
 *.flac
+upload_config.py

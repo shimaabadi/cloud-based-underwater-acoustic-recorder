@@ -102,7 +102,7 @@ def record(recording_length, path):
     Returns true if the recording succeeds and false if there is an exception thrown.
     '''
     try:
-        os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + recording_length + ' ' + path + '.wav')
+        os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + str(recording_length) + ' ' + path + '.wav')
     except Exception as e:
         print('An error occurred in function recorder::record():')
         print(e)
