@@ -3,13 +3,12 @@ File:           recorder.py
 Purpose:        Encapsulates the code necessary to record a sample from
                 the microphone.
 
-Authors:        Ryan Berge, Derek DeLizo
+Authors:        Ryan Berge
 
-Last Updated:   May 2nd, 2018
+Last Updated:   May 9th, 2018
 Version:        0.2
 '''
 
-import pyaudio
 import datetime
 import copy
 import wave
@@ -99,11 +98,11 @@ def get_filepath():
 
 def record(recording_length, path):
     '''
-    Record a word or words from the microphone and
-    return the data as an array of signed shorts.
+    Perform a recording of the designated length and save it to the designated path.
+    Returns true if the recording succeeds and false if there is an exception thrown.
     '''
     try:
-        os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + recording_length + path + '.wav')
+        os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + recording_length + ' ' + path + '.wav')
     except Exception as e:
         print('An error occurred in function recorder::record():')
         print(e)
@@ -115,11 +114,11 @@ def record(recording_length, path):
 def _test():
     '''Module-level testing code.'''
     now = datetime.now()
-    t = now.minute
-    t = now.hour
+    t_m = now.minute
+    t_h = now.hour
 
-    start = str(t) + ':' + str(t)
-    stop = str(t) + ':' + str(t + 1)
+    start = str(t_h) + ':' + str(t_m)
+    stop = str(t_h) + ':' + str(t_m + 1)
 
     record_sample(start, stop)
 
