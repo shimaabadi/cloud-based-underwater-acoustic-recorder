@@ -15,31 +15,31 @@ import configparser
 
 def monday(start, stop):
     print('Scheduler: Adding a recording on Mondays from ', start, ' to ', stop)
-    schedule.every().monday.at(start).do(recorder.record_sample, stop)
+    schedule.every().monday.at(start).do(recorder.record_sample, start, stop)
 
 def tuesday(start, stop):
     print('Scheduler: Adding a recording on Tuesdays from ', start, ' to ', stop)
-    schedule.every().tuesday.at(start).do(recorder.record_sample, stop)
+    schedule.every().tuesday.at(start).do(recorder.record_sample, start, stop)
 
 def wednesday(start, stop):
     print('Scheduler: Adding a recording on Wednesdays from ', start, ' to ', stop)
-    schedule.every().wednesday.at(start).do(recorder.record_sample, stop)
+    schedule.every().wednesday.at(start).do(recorder.record_sample, start, stop)
 
 def thursday(start, stop):
     print('Scheduler: Adding a recording on Thursdays from ', start, ' to ', stop)
-    schedule.every().thursday.at(start).do(recorder.record_sample, stop)
+    schedule.every().thursday.at(start).do(recorder.record_sample, start, stop)
 
 def friday(start, stop):
     print('Scheduler: Adding a recording on Fridays from ', start, ' to ', stop)
-    schedule.every().friday.at(start).do(recorder.record_sample, stop)
+    schedule.every().friday.at(start).do(recorder.record_sample, start, stop)
 
 def saturday(start, stop):
     print('Scheduler: Adding a recording on Saturdays from ', start, ' to ', stop)
-    schedule.every().saturday.at(start).do(recorder.record_sample, stop)
+    schedule.every().saturday.at(start).do(recorder.record_sample, start, stop)
 
 def sunday(start, stop):
     print('Scheduler: Adding a recording on Sundays from ', start, ' to ', stop)
-    schedule.every().sunday.at(start).do(recorder.record_sample, stop)
+    schedule.every().sunday.at(start).do(recorder.record_sample, start, stop)
 
 def load_schedule(config: configparser.ConfigParser):
     '''Load a schedule from a configuration file and register it with the scheduler.'''
@@ -52,6 +52,8 @@ def load_schedule(config: configparser.ConfigParser):
         'saturday' : saturday,
         'sunday' : sunday
     }
+
+    print('Loading schedule...')
 
     options = config.options('Schedule')
 
