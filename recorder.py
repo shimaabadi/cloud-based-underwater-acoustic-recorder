@@ -84,8 +84,8 @@ def record_sample(start, stop):
         elapsed = end - start
 
         log = open('log.txt', 'a')
-        log.write('Recording at ' + start + ' lasting ' + str(recording_length) + '\n')
-        log.write('File conversion took ' + elapsed + ' seconds.\n\n')
+        log.write('Recording at ' + str(start) + ' lasting ' + str(recording_length) + '\n')
+        log.write('File conversion took ' + str(elapsed) + ' seconds.\n\n')
         log.close()
     else:
         recording_succeeded = False

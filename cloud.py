@@ -69,11 +69,11 @@ def upload_recording(filename: str, config):
 
         log = open('log.txt', 'a')
         log.write('Upload ' + filename)
-        log.write('Upload took ' + elapsed + ' seconds.\n\n')
+        log.write('Upload took ' + str(elapsed) + ' seconds.\n\n')
         log.close()
 
     except Exception as e:
-        log = open('log.txt')
+        log = open('log.txt', 'a')
         log.write('CheckConfig: There was an error connecting to the cloud.\n')
         log.write(e + '\n')
         log.close()
@@ -112,7 +112,7 @@ def check_config():
             os.system('reboot')
 
     except:
-        log = open('log.txt')
+        log = open('log.txt', 'a')
         log.write('CheckConfig: There was an error connecting to the cloud.\n\n')
         log.close()
         return
