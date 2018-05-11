@@ -14,7 +14,6 @@ import copy
 import wave
 import os
 import configparser
-from datetime import datetime
 import time
 from sys import byteorder
 from array import array
@@ -43,7 +42,7 @@ def record_sample(start, stop):
     SAMPLING_RATE = config.get('Recording', 'sampling_rate')
     SAMPLING_SIZE = config.get('Recording', 'sampling_size')
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
     timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
     path = 'data/recording_' + datestamp + '_' + timestamp
@@ -123,7 +122,7 @@ def record(recording_length, path):
 
 def _test():
     '''Module-level testing code.'''
-    now = datetime.now()
+    now = datetime.datetime.now()
     t_m = now.minute
     t_h = now.hour
 
