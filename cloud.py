@@ -22,6 +22,7 @@ def progressCallback(current, total):
 
 def upload_recording(filename: str, config):
     try:
+        start = time.time()
         print('Uploading...')
         credential_path = 'credentials.ini'
         credentials = configparser.ConfigParser()
@@ -63,39 +64,58 @@ def upload_recording(filename: str, config):
         #remove the temp directory and local file
         os.rmdir(temp_dir)
 
+        end = time.time()
+        elapsed = end - start
+
+        log = open('log.txt', 'a')
+        log.write('Upload ' + filename)
+        log.write('Upload took ' + elapsed + ' seconds.\n\n')
+        log.close()
+
     except Exception as e:
-        print('An exception occurred while uploading the file:')
-        print(e)
+        log = open('log.txt')
+        log.write('CheckConfig: There was an error connecting to the cloud.\n')
+        log.write(e + '\n')
+        log.close()
         return
 
     print('Upload complete')
 
+
 def check_config():
-    print('Cloud: Checking for new configuration.')
+    try:
+        print('Cloud: Checking for new configuration.')
 
-    credential_path = 'credentials.ini'
-    credentials = configparser.ConfigParser()
-    credentials.read(credential_path)
+        credential_path = 'credentials.ini'
+        credentials = configparser.ConfigParser()
+        credentials.read(credential_path)
 
-    username = credentials.get('Azure', 'Username')
-    password = credentials.get('Azure', 'Password')
+        username = credentials.get('Azure', 'Username')
+        password = credentials.get('Azure', 'Password')
 
-    blob_service = BlockBlobService(account_name=username, account_key=password)
+        blob_service = BlockBlobService(account_name=username, account_key=password)
 
-    generator = blob_service.list_blobs('configuration')
-    for b in generator:
-        timestamp = b.properties.last_modified
-        break
+        generator = blob_service.list_blobs('configuration')
+        for b in generator:
+            timestamp = b.properties.last_modified
+            break
 
-    # The dumbest bullshit I have ever experienced
-    last_modified = datetime.datetime.fromtimestamp(os.path.getmtime('config.ini'))
-    last_modified = last_modified.replace(tzinfo=datetime.timezone.utc).astimezone(tz=datetime.timezone.utc)
-    last_modified += datetime.timedelta(hours=time.altzone / 60 / 60)
+        # The dumbest bullshit I have ever experienced
+        last_modified = datetime.datetime.fromtimestamp(os.path.getmtime('config.ini'))
+        last_modified = last_modified.replace(tzinfo=datetime.timezone.utc).astimezone(tz=datetime.timezone.utc)
+        last_modified += datetime.timedelta(hours=time.altzone / 60 / 60)
 
-    if timestamp > last_modified:
-        print('Downloading new configuration.')
-        blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
-        os.system('reboot')
+        if timestamp > last_modified:
+            print('Downloading new configuration.')
+            blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
+            os.system('sudo poff fona')
+            os.system('reboot')
+
+    except:
+        log = open('log.txt')
+        log.write('CheckConfig: There was an error connecting to the cloud.\n\n')
+        log.close()
+        return
 
 
 def _test():

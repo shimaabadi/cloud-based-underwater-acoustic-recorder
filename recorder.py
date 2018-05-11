@@ -15,7 +15,7 @@ import wave
 import os
 import configparser
 from datetime import datetime
-from datetime import time
+import time
 from sys import byteorder
 from array import array
 from struct import pack
@@ -52,8 +52,8 @@ def record_sample(start, stop):
     start = start.split(':')
     stop = stop.split(':')
 
-    start = time(int(start[0]), int(start[1]))
-    stop = time(int(stop[0]), int(stop[1]))
+    start = datetime.time(int(start[0]), int(start[1]))
+    stop = datetime.time(int(stop[0]), int(stop[1]))
 
     # Note: This could produce errors for recordings over 1 hour in length
     recording_length = stop.minute - start.minute
@@ -66,6 +66,8 @@ def record_sample(start, stop):
     success = record(recording_length, path)
 
     if success:
+        start = time.time()
+
         os.system('sox -v 0.87 -b '+ SAMPLING_SIZE + ' -r ' + SAMPLING_RATE + ' ' + path + '.wav ' + path + '.flac')
         if os.path.isfile(path + '.flac'):
             os.remove(path + '.wav')
@@ -78,6 +80,14 @@ def record_sample(start, stop):
         file_timestamp = path + '.flac'
         global recording_succeeded
         recording_succeeded = True
+
+        end = time.time()
+        elapsed = end - start
+
+        log = open('log.txt', 'a')
+        log.write('Recording at ' + start + ' lasting ' + str(recording_length) + '\n')
+        log.write('File conversion took ' + elapsed + ' seconds.\n\n')
+        log.close()
     else:
         recording_succeeded = False
         file_timestamp = ''
