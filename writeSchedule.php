@@ -14,16 +14,23 @@
 				$ini['Schedule'][$check].=$newTime;
 			}
 			
-			if (!$handle = fopen("schedule.ini", 'w')) { 
-				return false; 
+			$content = "";
+			foreach($ini as $key => $val){
+				$content.="[".$key."]\n";
+				if(is_array($val)){
+					foreach($val as $item => $val){
+						$content.=$item." = ".$val."\n";
+					}
+				}
 			}
- 
-			$success = fwrite($handle, $ini);
-			fclose($handle);
+			
+			$sched = fopen("schedule.ini","w");
+			fwrite($sched,$content);
+			fclose($sched);
+			
 		} else {
 			echo "Please fill out all fields";
 		}
-		
-		
     }
+	header('Location: index.php');
 ?>
