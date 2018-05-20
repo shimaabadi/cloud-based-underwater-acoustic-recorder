@@ -8,3 +8,5 @@
 * p7zip-full
 * sox
 * arecord
+* gpsd
+* python-gps
