@@ -4,6 +4,7 @@
 ## Python Modules
 * schedule
 * azure
+* rpi-gpio
 ## System
 * p7zip-full
 * sox
