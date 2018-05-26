@@ -18,6 +18,8 @@ import time
 from sys import byteorder
 from array import array
 from struct import pack
+import logger
+import led
 
 SAMPLING_RATE = 5000
 SAMPLING_SIZE = 8
@@ -28,14 +30,16 @@ recording_succeeded = False
 def record_sample(start, stop):
     '''Begins recording a sample up to the designated stop time.'''
 
-    print('Beginning recording...')
+    logger.write('Beginning recording...')
+
 
     try:
         configpath = 'config.ini'
         config = configparser.ConfigParser()
         config.read(configpath)
-    except Exception:
-        print('There was an error reading the configuration file.')
+    except Exception as e:
+        logger.write('There was an error reading the configuration file:')
+        logger.write(str(e))
 
     global SAMPLING_RATE
     global SAMPLING_SIZE
@@ -43,8 +47,8 @@ def record_sample(start, stop):
     SAMPLING_SIZE = config.get('Recording', 'sampling_size')
 
     now = datetime.datetime.now()
-    datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
-    timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
+    datestamp = str(now.year) + '-' + str(now.month).zfill(2) + '-' + str(now.day).zfill(2)
+    timestamp = str(now.hour).zfill(2) + '-' + str(now.minute).zfill(2) + '-' + str(now.second).zfill(2)
     path = 'data/recording_' + datestamp + '_' + timestamp
     print("Path: %s  StopTime: %s" % (path,stop))
 
@@ -67,14 +71,14 @@ def record_sample(start, stop):
     if success:
         start = time.time()
 
-        os.system('sox -v 0.87 -b '+ SAMPLING_SIZE + ' -r ' + SAMPLING_RATE + ' ' + path + '.wav ' + path + '.flac')
+        os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
         if os.path.isfile(path + '.flac'):
             os.remove(path + '.wav')
         else:
-            print('Recording failed.')
+            logger.write('There was an error converting the file.')
             return
 
-        print('Recording completed.')
+        logger.write('Recording completed.')
         global file_timestamp
         file_timestamp = path + '.flac'
         global recording_succeeded
@@ -83,10 +87,8 @@ def record_sample(start, stop):
         end = time.time()
         elapsed = end - start
 
-        log = open('log.txt', 'a')
-        log.write('Recording at ' + str(start) + ' lasting ' + str(recording_length) + '\n')
-        log.write('File conversion took ' + str(elapsed) + ' seconds.\n\n')
-        log.close()
+        logger.write('Recording at ' + str(start) + ' lasting ' + str(recording_length))
+        logger.write('File conversion took ' + str(elapsed) + ' seconds.\n')
     else:
         recording_succeeded = False
         file_timestamp = ''
@@ -98,7 +100,6 @@ def get_filepath():
         timestamp = file_timestamp
         file_timestamp = ''
         recording_succeeded = False
-        print(timestamp)
         return timestamp
     else:
         file_timestamp = ''
@@ -110,13 +111,17 @@ def record(recording_length, path):
     Perform a recording of the designated length and save it to the designated path.
     Returns true if the recording succeeds and false if there is an exception thrown.
     '''
+    recording_light = led.led(16) # GPIO 16 = Recording LED
+    recording_light.on()
     try:
         os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + str(recording_length) + ' ' + path + '.wav')
     except Exception as e:
-        print('An error occurred in function recorder::record():')
-        print(e)
+        logger.write('An error occurred while recording.')
+        logger.write(str(e))
+        recording_light.off()
         return False
 
+    recording_light.off()
     return True
 
 

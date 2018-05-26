@@ -5,3 +5,4 @@ __pycache__/*
 *.wav
 *.flac
 upload_config.py
+log.txt
