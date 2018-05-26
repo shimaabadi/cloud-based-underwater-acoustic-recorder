@@ -18,6 +18,7 @@ import time
 from sys import byteorder
 from array import array
 from struct import pack
+import logger
 
 SAMPLING_RATE = 5000
 SAMPLING_SIZE = 8
@@ -83,10 +84,8 @@ def record_sample(start, stop):
         end = time.time()
         elapsed = end - start
 
-        log = open('log.txt', 'a')
-        log.write('Recording at ' + str(start) + ' lasting ' + str(recording_length) + '\n')
-        log.write('File conversion took ' + str(elapsed) + ' seconds.\n\n')
-        log.close()
+        logger.write('Recording at ' + str(start) + ' lasting ' + str(recording_length))
+        logger.write('File conversion took ' + str(elapsed) + ' seconds.\n')
     else:
         recording_succeeded = False
         file_timestamp = ''
