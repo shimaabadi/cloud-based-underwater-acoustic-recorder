@@ -9,10 +9,14 @@ Last Updated:   May 25th, 2018
 Version:        0.2
 '''
 
+import datetime
+
 def write(message: str):
+    now = datetime.datetime.now()
+    print(str(now) + ':  \t' + message)
     try:
         log = open('log.txt', 'a')
-        log.write(message + '\n')
+        log.write(str(now) + ':  \t' + message + '\n')
         log.close()
         return True
     except:

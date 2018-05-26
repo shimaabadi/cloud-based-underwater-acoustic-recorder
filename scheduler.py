@@ -12,40 +12,41 @@ Version:        0.2
 import recorder
 import schedule
 import configparser
+import logger
 
 def monday(start, stop):
-    print('Scheduler: Adding a recording on Mondays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Mondays from ' + str(start) + ' to ' + str(stop))
     schedule.every().monday.at(start).do(recorder.record_sample, start, stop)
 
 def tuesday(start, stop):
-    print('Scheduler: Adding a recording on Tuesdays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Tuesdays from ' + str(start) + ' to ' + str(stop))
     schedule.every().tuesday.at(start).do(recorder.record_sample, start, stop)
 
 def wednesday(start, stop):
-    print('Scheduler: Adding a recording on Wednesdays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Wednesdays from ' + str(start) + ' to ' + str(stop))
     schedule.every().wednesday.at(start).do(recorder.record_sample, start, stop)
 
 def thursday(start, stop):
-    print('Scheduler: Adding a recording on Thursdays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Thursdays from ' + str(start) + ' to ' + str(stop))
     schedule.every().thursday.at(start).do(recorder.record_sample, start, stop)
 
 def friday(start, stop):
-    print('Scheduler: Adding a recording on Fridays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Fridays from ' + str(start) + ' to ' + str(stop))
     schedule.every().friday.at(start).do(recorder.record_sample, start, stop)
 
 def saturday(start, stop):
-    print('Scheduler: Adding a recording on Saturdays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Saturdays from ' + str(start) + ' to ' + str(stop))
     schedule.every().saturday.at(start).do(recorder.record_sample, start, stop)
 
 def sunday(start, stop):
-    print('Scheduler: Adding a recording on Sundays from ', start, ' to ', stop)
+    logger.write('Scheduler: Adding a recording on Sundays from ' + str(start) + ' to ' + str(stop))
     schedule.every().sunday.at(start).do(recorder.record_sample, start, stop)
 
 def register_config(check_config, config):
     checkin_frequency = config.getint('Cloud', 'checkin_frequency')
-    print('Scheduler: Registering config check-in every', checkin_frequency, 'minutes.')
+    logger.write('Scheduler: Registering config check-in every ' + str(checkin_frequency) + ' minutes.')
     #TODO: Change to minutes before deployment
-    schedule.every(checkin_frequency).seconds.do(check_config)
+    schedule.every(checkin_frequency).minutes.do(check_config)
 
 def load_schedule(config: configparser.ConfigParser, check_config):
     '''Load a schedule from a configuration file and register it with the scheduler.'''
@@ -59,7 +60,7 @@ def load_schedule(config: configparser.ConfigParser, check_config):
         'sunday' : sunday
     }
 
-    print('Loading schedule...')
+    logger.write('Loading schedule...')
 
     options = config.options('Schedule')
 

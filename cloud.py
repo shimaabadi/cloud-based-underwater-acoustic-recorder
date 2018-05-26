@@ -16,15 +16,20 @@ import datetime
 from azure.storage.blob import BlockBlobService
 import time
 import logger
+import led
+import gpsutil
 
 # A simple callback to report the current progress of the upload.
 def progressCallback(current, total):
     print("Progress {0}/{1} ({2:.2f}%)".format(current, total, 100*current/total))
 
 def upload_recording(filename: str, config):
+    upload_light = led.led(20) # GPIO 20 is the Uploading indicator
+    upload_light.on()
     try:
         start = time.time()
-        print('Uploading...')
+        logger.write('Uploading...')
+
         credential_path = 'credentials.ini'
         credentials = configparser.ConfigParser()
         credentials.read(credential_path)
@@ -62,17 +67,33 @@ def upload_recording(filename: str, config):
         os.remove(filename)
 
     except Exception as e:
-        print(e)
         logger.write('CheckConfig: There was an error uploading to the cloud.')
         logger.write(str(e))
+        upload_light.off()
         return
 
-    print('Upload complete')
+    upload_light.off()
+    logger.write('Upload complete')
 
 
 def check_config():
+    gps_light = led.led(23)
+    logger.write('Synchronizing clock with GPS...')
+    fix, current_time, lattitude, longitude = gpsutil.getGPSInfo()
+    if fix == True:
+        logger.write('GPS Fix established.')
+        gps_light.on()
+        try:
+            os.system('sudo date -s ' + current_time)
+        except Exception as e:
+            logger.write(str(e))
+        pass
+    else:
+        logger.write('GPS Fix failed.')
+        gps_light.off()
+
     try:
-        print('Cloud: Checking for new configuration.')
+        logger.write('Cloud: Checking for new configuration.')
 
         credential_path = 'credentials.ini'
         credentials = configparser.ConfigParser()
@@ -94,8 +115,10 @@ def check_config():
         last_modified += datetime.timedelta(hours=time.altzone / 60 / 60)
 
         if timestamp > last_modified:
-            print('Downloading new configuration.')
+            logger.write('Downloading new configuration.')
             blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
+            logger.write('Rebooting...')
+            #TODO: Clean-up step
             os.system('reboot')
 
     except:

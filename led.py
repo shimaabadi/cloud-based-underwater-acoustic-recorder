@@ -28,3 +28,10 @@ class led:
         GPIO.output(self.pin,GPIO.LOW) if self.lit else GPIO.output(self.pin,GPIO.HIGH)
         self.lit = not self.lit
 
+def _test():
+    test_light = led(23) # use GPIO 23
+
+    test_light.on()
+
+if __name__ == '__main__':
+    _test()

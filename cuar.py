@@ -17,8 +17,13 @@ Version:        0.2
 import configparser
 import scheduler
 import cloud
+import led
+import logger
 
 if __name__ == '__main__':
+    power_light = led.led(12) # GPIO 12 = Power LED
+    power_light.on()
+
     try:
         configpath = 'config.ini'
         config = configparser.ConfigParser()
@@ -28,7 +33,13 @@ if __name__ == '__main__':
 
     scheduler.load_schedule(config, cloud.check_config)
 
-    while True:
-        file = scheduler.run_pending()
-        if file != '':
-            cloud.upload_recording(file, config)
+    try:
+        while True:
+            file = scheduler.run_pending()
+            if file != '':
+                cloud.upload_recording(file, config)
+    except Exception as e:
+        power_light.off()
+        logger.write(str(e))
+        print(str(e))
+        exit(1)
