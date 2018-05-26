@@ -67,7 +67,7 @@ def record_sample(start, stop):
     if success:
         start = time.time()
 
-        os.system('sox -v 0.87 -b '+ SAMPLING_SIZE + ' -r ' + SAMPLING_RATE + ' ' + path + '.wav ' + path + '.flac')
+        os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
         if os.path.isfile(path + '.flac'):
             os.remove(path + '.wav')
         else:
