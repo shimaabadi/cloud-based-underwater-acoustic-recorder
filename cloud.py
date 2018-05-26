@@ -15,6 +15,7 @@ import subprocess
 import datetime
 from azure.storage.blob import BlockBlobService
 import time
+import logger
 
 # A simple callback to report the current progress of the upload.
 def progressCallback(current, total):
@@ -34,49 +35,36 @@ def upload_recording(filename: str, config):
         password = credentials.get('Azure', 'Password')
 
         block_blob_service = BlockBlobService(account_name=username, account_key=password)
-        #block_blob_service.create_blob_from_path('ryanblob2', os.path.basename(filename), filename)
 
         # Force chunked uploading and set upload block sizes to 8KB
         block_blob_service.MAX_SINGLE_PUT_SIZE=16
         block_blob_service.MAX_BLOCK_SIZE=8*1024
 
-        # Create a temp directory for the 7zip files to go into
-        temp_dir = os.path.join(os.getcwd(), "temp")
-        temp_path = os.path.join(temp_dir, "upload.7z")
-
-        # The local path to the file
-        local_path = os.path.join(os.getcwd(), filename)
-
         timestamp = os.path.basename(filename).split('.')[0]
+        extension = os.path.basename(filename).split('.')[1]
 
-        # Run 7zip to split the file into 512KB parts to be uploaded individually
-        subprocess.run(["7z", "-v512k", "a", temp_path, local_path])
+        timestamp_day = timestamp.split('_')[1]
+        timestamp_time = timestamp.split('_')[2]
 
-        # Upload all fileparts into azure blob storage
-        for filename in os.listdir(temp_dir):
-            zip_path = os.path.join(temp_dir, filename)
-            output_path = os.path.join(timestamp, filename)
-            block_blob_service.create_blob_from_path(container, output_path, zip_path, None, None, False, progressCallback)
+        timestamp_day = timestamp_day.replace('-', '_')
+        timestamp_time = timestamp_time.replace('-', '_')
 
-            #remove file after upload
-            os.remove(zip_path)
+        blob_name = timestamp_day + '/' + timestamp_time + '/recording.' + extension
 
-        #remove the temp directory and local file
-        os.rmdir(temp_dir)
+        block_blob_service.create_blob_from_path(container, blob_name, filename)
 
         end = time.time()
         elapsed = end - start
 
-        log = open('log.txt', 'a')
-        log.write('Upload ' + filename)
-        log.write('Upload took ' + str(elapsed) + ' seconds.\n\n')
-        log.close()
+        logger.write('Upload Succeeded: ' + blob_name)
+        logger.write('Upload took ' + str(elapsed) + ' seconds.\n')
+
+        os.remove(filename)
 
     except Exception as e:
-        log = open('log.txt', 'a')
-        log.write('CheckConfig: There was an error connecting to the cloud.\n')
-        log.write(e + '\n')
-        log.close()
+        print(e)
+        logger.write('CheckConfig: There was an error uploading to the cloud.')
+        logger.write(str(e))
         return
 
     print('Upload complete')
@@ -108,21 +96,18 @@ def check_config():
         if timestamp > last_modified:
             print('Downloading new configuration.')
             blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
-            os.system('sudo poff fona')
             os.system('reboot')
 
     except:
-        log = open('log.txt', 'a')
-        log.write('CheckConfig: There was an error connecting to the cloud.\n\n')
-        log.close()
+        logger.write('CheckConfig: There was an error connecting to the cloud.\n')
         return
 
 
 def _test():
-    # config = configparser.ConfigParser()
-    # config.read('config.ini')
-    # upload_recording('data/recording_2018-4-11_14-9-0.flac', config)
-    check_config()
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    upload_recording('data/recording_2018-04-11_14-09-00.flac', config)
+    # check_config()
 
 if __name__ == '__main__':
     _test()

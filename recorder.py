@@ -43,8 +43,8 @@ def record_sample(start, stop):
     SAMPLING_SIZE = config.get('Recording', 'sampling_size')
 
     now = datetime.datetime.now()
-    datestamp = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
-    timestamp = str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
+    datestamp = str(now.year) + '-' + str(now.month).zfill(2) + '-' + str(now.day).zfill(2)
+    timestamp = str(now.hour).zfill(2) + '-' + str(now.minute).zfill(2) + '-' + str(now.second).zfill(2)
     path = 'data/recording_' + datestamp + '_' + timestamp
     print("Path: %s  StopTime: %s" % (path,stop))
 
