@@ -121,7 +121,8 @@ def check_config():
             #TODO: Clean-up step
             os.system('sudo reboot')
 
-    except:
+    except Exception as e:
+        logger.write(str(e))
         logger.write('CheckConfig: There was an error connecting to the cloud.\n')
         return
 
