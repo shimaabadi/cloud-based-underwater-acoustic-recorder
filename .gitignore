@@ -1,5 +1,6 @@
 .vscode
 data/*
+config.ini
 credentials.ini
 __pycache__/*
 *.wav
