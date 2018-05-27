@@ -13,7 +13,7 @@ def getGPSInfo():
     fix = (output[0] == 'True')
     time = output[1]
     latitude = output[2]
-    longitude = output[3]
+    longitude = output[3].rstrip()
 
-    return (fix, time, latitude, longitude)
+    return fix, time, latitude, longitude
 
