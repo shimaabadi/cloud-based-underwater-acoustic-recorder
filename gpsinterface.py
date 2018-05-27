@@ -30,7 +30,10 @@ while noFix:
 
         #when the GPS device is returning information about itself, this is true
         if report['class'] == 'TPV':
-            print True, report.time, report.lat, report.lon
+            if hasattr(report, 'time') and hasattr(report, 'lat') and hasattr(report, 'lon'):
+                print True, report.time, report.lat, report.lon.rstrip()
+            else:
+                print False, 0, 0, 0
             noFix = False
     except Timeout:
         print False, 0, 0, 0
