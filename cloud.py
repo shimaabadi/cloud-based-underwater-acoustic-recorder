@@ -119,7 +119,7 @@ def check_config():
             blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
             logger.write('Rebooting...')
             #TODO: Clean-up step
-            os.system('reboot')
+            os.system('sudo reboot')
 
     except:
         logger.write('CheckConfig: There was an error connecting to the cloud.\n')
