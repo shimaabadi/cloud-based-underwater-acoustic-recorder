@@ -65,7 +65,9 @@ def load_schedule(config: configparser.ConfigParser, check_config):
     options = config.options('Schedule')
 
     for o in options:
-        times = config.get('Schedule', o).split(',')
+        times = config.get('Schedule', o)
+        times = times.replace('"', '')
+        times = times.split(',')
         if times[0] == '':
             continue
         for t in times:
