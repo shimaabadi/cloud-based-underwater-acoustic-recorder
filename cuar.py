@@ -40,6 +40,7 @@ if __name__ == '__main__':
                 cloud.upload_recording(file, config)
     except Exception as e:
         power_light.off()
+        logger.write('There was an uncaught exception:')
         logger.write(str(e))
-        print(str(e))
+        #TODO: Upload status, log file (include IP!)
         exit(1)
