@@ -14,9 +14,16 @@
 	height:50%;
 	overflow-y: scroll;
 	}
-.border{
+.padding{
 	padding: 70px;
 }
+td.outer-table { 
+    padding: 10px;
+}
+tr.cell{
+	vertical-align: top;
+}
+
 </style>
 <?php
 	$maxcols = 5;
@@ -26,35 +33,32 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  </head>
  <body>
- <table width=100% height=100%>
+ <table width=100% height=500px>
  <col width="35%">
  <col width="30%">
  <col width="35%">
- <tr>
- <td>
-	<h1>Enter the Directory</h1></br>
-	<input type="text" id="directory">
-	<button type='button' onclick="test()">Click!</button>
+ <tr class="cell" height="100px">
+	<td>
+		<h1>Enter the Directory</h1></br>
+		<input type="text" id="directory">
+		<button type='button' onclick="test()">Click!</button>
+	</td>
+	<td></td>
+	<td></td>
+ </tr>
+ <tr class="cell">
+ <td class="outer-table">
 	<div class="container" id="DirList"></div>
  </td>
  <td>
- <table border=1 width=100%>
- <col width="10%">
- <col width="20%">
- <col width="70%">
- <tr>
-	<th>Edit</th>
-	<th>Schedule</th>
-	<th>Time</th>
- </tr>
+ <form action="removeSchedule.php" method="post">
  <?php
 	include 'getSchedule.php';
  ?>
- <br>
- <button type="button" onclick="loadSchedule">Update Schedule</button>
+ </form>
  </td>
  <td>
- <div class="border">
+ <div class="padding">
  <form action="writeSchedule.php" method="post">
 	<input type="time" name="start" id="start"> to <input type="time" name="stop" id="stop">
 	<input type="submit" name="update" value="Update"><br>
