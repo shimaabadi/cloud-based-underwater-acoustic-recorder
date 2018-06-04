@@ -40,8 +40,10 @@ def upload_recording(filename: str, config):
     upload_light.on()
 
     try:
+        logger.write('Uploading status file...')
         status_file = status.update_status(False, True, False)
         status.upload_status(status_file, False)
+        logger.write('Upload complete.')
     except Exception as e:
         logger.write('An error occurred while uploading a status file.')
         logger.write(str(e))
@@ -96,8 +98,10 @@ def upload_recording(filename: str, config):
     logger.write('Upload complete')
 
     try:
+        logger.write('Uploading status file...')
         status_file = status.update_status(False, False, False)
         status.upload_status(status_file, False)
+        logger.write('Upload complete.')
     except Exception as e:
         logger.write('An error occurred while uploading a status file.')
         logger.write(str(e))
@@ -112,8 +116,10 @@ def check_config():
         internet_light.off()
 
     try:
+        logger.write('Uploading status file...')
         status_file = status.update_status(False, False, False)
         status.upload_status(status_file, False)
+        logger.write('Upload complete.')
     except Exception as e:
         logger.write('An error occurred while uploading a status file.')
         logger.write(str(e))

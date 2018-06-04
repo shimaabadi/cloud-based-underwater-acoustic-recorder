@@ -35,8 +35,10 @@ def record_sample(start, stop):
     logger.write('Beginning recording...')
 
     try:
+        logger.write('Uploading status file...')
         status_file = status.update_status(True, False, False)
         status.upload_status(status_file, False)
+        logger.write('Upload complete.')
     except Exception as e:
         logger.write('An error occurred while uploading a status file.')
         logger.write(str(e))
@@ -117,8 +119,10 @@ def record_sample(start, stop):
     time.sleep(30)
 
     try:
+        logger.write('Uploading status file...')
         status_file = status.update_status(False, False, False)
         status.upload_status(status_file, False)
+        logger.write('Upload complete.')
     except Exception as e:
         logger.write('An error occurred while uploading a status file.')
         logger.write(str(e))
