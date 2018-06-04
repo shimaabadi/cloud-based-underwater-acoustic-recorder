@@ -19,6 +19,7 @@ import logger
 import led
 import gpsutil
 import socket
+import status
 
 
 # I stole this function from StackOverflow
