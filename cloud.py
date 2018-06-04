@@ -18,6 +18,18 @@ import time
 import logger
 import led
 import gpsutil
+import socket
+
+
+# I stole this function from StackOverflow
+# This function will give false negatives if Google goes out of business.
+def has_internet():
+    try:
+        socket.create_connection(("www.google.com", 80))
+        return True
+    except OSError:
+        pass
+    return False
 
 # A simple callback to report the current progress of the upload.
 def progressCallback(current, total):
@@ -26,6 +38,14 @@ def progressCallback(current, total):
 def upload_recording(filename: str, config):
     upload_light = led.led(20) # GPIO 20 is the Uploading indicator
     upload_light.on()
+
+    try:
+        status_file = status.update_status(False, True, False)
+        status.upload_status(status_file, False)
+    except Exception as e:
+        logger.write('An error occurred while uploading a status file.')
+        logger.write(str(e))
+
     try:
         start = time.time()
         logger.write('Uploading...')
@@ -75,22 +95,28 @@ def upload_recording(filename: str, config):
     upload_light.off()
     logger.write('Upload complete')
 
+    try:
+        status_file = status.update_status(False, False, False)
+        status.upload_status(status_file, False)
+    except Exception as e:
+        logger.write('An error occurred while uploading a status file.')
+        logger.write(str(e))
+
 
 def check_config():
-    gps_light = led.led(23)
-    logger.write('Synchronizing clock with GPS...')
-    fix, current_time, lattitude, longitude = gpsutil.getGPSInfo()
-    if fix == True:
-        logger.write('GPS Fix established.')
-        gps_light.on()
-        try:
-            os.system('sudo date -s ' + current_time)
-        except Exception as e:
-            logger.write(str(e))
-        pass
+    internet_connection = has_internet()
+    internet_light = led.led(23)
+    if internet_connection:
+        internet_light.on()
     else:
-        logger.write('GPS Fix failed.')
-        gps_light.off()
+        internet_light.off()
+
+    try:
+        status_file = status.update_status(False, False, False)
+        status.upload_status(status_file, False)
+    except Exception as e:
+        logger.write('An error occurred while uploading a status file.')
+        logger.write(str(e))
 
     try:
         logger.write('Cloud: Checking for new configuration.')
@@ -120,6 +146,8 @@ def check_config():
             logger.write('Rebooting...')
             #TODO: Clean-up step
             os.system('sudo reboot')
+        else:
+            logger.write('No new configuration found.')
 
     except Exception as e:
         logger.write(str(e))

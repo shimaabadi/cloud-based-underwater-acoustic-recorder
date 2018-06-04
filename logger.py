@@ -23,6 +23,7 @@ def write(message: str):
         return False
 
 def clear():
+    print('Clearing log file...')
     try:
         log = open('log.txt', 'w')
         log.write('')

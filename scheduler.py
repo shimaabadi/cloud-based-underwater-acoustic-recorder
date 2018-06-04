@@ -79,7 +79,9 @@ def load_schedule(config: configparser.ConfigParser, check_config):
             schedule_map[o](start, stop)
 
     register_config(check_config, config)
+    schedule.every(1).days.do(logger.clear())
     check_config()
+
 
 def run_pending():
     schedule.run_pending()

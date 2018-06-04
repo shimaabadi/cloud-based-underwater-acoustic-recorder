@@ -20,6 +20,8 @@ from array import array
 from struct import pack
 import logger
 import led
+import RPi.GPIO as GPIO
+import status
 
 SAMPLING_RATE = 5000
 SAMPLING_SIZE = 8
@@ -32,6 +34,19 @@ def record_sample(start, stop):
 
     logger.write('Beginning recording...')
 
+    try:
+        status_file = status.update_status(True, False, False)
+        status.upload_status(status_file, False)
+    except Exception as e:
+        logger.write('An error occurred while uploading a status file.')
+        logger.write(str(e))
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(24, GPIO.OUT)
+    GPIO.output(24, GPIO.HIGH)
+
+    time.sleep(30)
 
     try:
         configpath = 'config.ini'
@@ -41,57 +56,72 @@ def record_sample(start, stop):
         logger.write('There was an error reading the configuration file:')
         logger.write(str(e))
 
-    global SAMPLING_RATE
-    global SAMPLING_SIZE
-    SAMPLING_RATE = config.get('Recording', 'sampling_rate')
-    SAMPLING_SIZE = config.get('Recording', 'sampling_size')
+    try:
+        global SAMPLING_RATE
+        global SAMPLING_SIZE
+        SAMPLING_RATE = config.get('Recording', 'sampling_rate')
+        SAMPLING_SIZE = config.get('Recording', 'sampling_size')
 
-    now = datetime.datetime.now()
-    datestamp = str(now.year) + '-' + str(now.month).zfill(2) + '-' + str(now.day).zfill(2)
-    timestamp = str(now.hour).zfill(2) + '-' + str(now.minute).zfill(2) + '-' + str(now.second).zfill(2)
-    path = 'data/recording_' + datestamp + '_' + timestamp
-    print("Path: %s  StopTime: %s" % (path,stop))
+        now = datetime.datetime.now()
+        datestamp = str(now.year) + '-' + str(now.month).zfill(2) + '-' + str(now.day).zfill(2)
+        timestamp = str(now.hour).zfill(2) + '-' + str(now.minute).zfill(2) + '-' + str(now.second).zfill(2)
+        path = 'data/recording_' + datestamp + '_' + timestamp
+        print("Path: %s  StopTime: %s" % (path,stop))
 
-    start = start.split(':')
-    stop = stop.split(':')
+        start = start.split(':')
+        stop = stop.split(':')
 
-    start = datetime.time(int(start[0]), int(start[1]))
-    stop = datetime.time(int(stop[0]), int(stop[1]))
+        start = datetime.time(int(start[0]), int(start[1]))
+        stop = datetime.time(int(stop[0]), int(stop[1]))
 
-    # Note: This could produce errors for recordings over 1 hour in length
-    recording_length = stop.minute - start.minute
-    if recording_length < 0:
-        recording_length += 60
+        # Note: This could produce errors for recordings over 1 hour in length
+        recording_length = stop.minute - start.minute
+        if recording_length < 0:
+            recording_length += 60
 
-    # Convert from minutes to seconds
-    recording_length *= 60
+        # Convert from minutes to seconds
+        recording_length *= 60
 
-    success = record(recording_length, path)
+        success = record(recording_length, path)
 
-    if success:
-        start = time.time()
+        if success:
+            start = time.time()
 
-        os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
-        if os.path.isfile(path + '.flac'):
-            os.remove(path + '.wav')
+            os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
+            if os.path.isfile(path + '.flac'):
+                os.remove(path + '.wav')
+            else:
+                logger.write('There was an error converting the file.')
+                return
+
+            logger.write('Recording completed.')
+            global file_timestamp
+            file_timestamp = path + '.flac'
+            global recording_succeeded
+            recording_succeeded = True
+
+            end = time.time()
+            elapsed = end - start
+
+            logger.write('Recording at ' + str(start) + ' lasting ' + str(recording_length))
+            logger.write('File conversion took ' + str(elapsed) + ' seconds.\n')
         else:
-            logger.write('There was an error converting the file.')
-            return
+            recording_succeeded = False
+            file_timestamp = ''
 
-        logger.write('Recording completed.')
-        global file_timestamp
-        file_timestamp = path + '.flac'
-        global recording_succeeded
-        recording_succeeded = True
+    except Exception as e:
+        logger.write('An exception was raised while recording:')
+        logger.write(str(e))
 
-        end = time.time()
-        elapsed = end - start
+    GPIO.output(24, GPIO.LOW)
+    time.sleep(30)
 
-        logger.write('Recording at ' + str(start) + ' lasting ' + str(recording_length))
-        logger.write('File conversion took ' + str(elapsed) + ' seconds.\n')
-    else:
-        recording_succeeded = False
-        file_timestamp = ''
+    try:
+        status_file = status.update_status(False, False, False)
+        status.upload_status(status_file, False)
+    except Exception as e:
+        logger.write('An error occurred while uploading a status file.')
+        logger.write(str(e))
 
 def get_filepath():
     global file_timestamp

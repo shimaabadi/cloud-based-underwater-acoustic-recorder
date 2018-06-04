@@ -19,6 +19,7 @@ import scheduler
 import cloud
 import led
 import logger
+import status
 
 if __name__ == '__main__':
     power_light = led.led(12) # GPIO 12 = Power LED
@@ -42,5 +43,6 @@ if __name__ == '__main__':
         power_light.off()
         logger.write('There was an uncaught exception:')
         logger.write(str(e))
-        #TODO: Upload status, log file (include IP!)
+        filename = status.update_status(False, False, True)
+        status.upload_status(filename, True)
         exit(1)
