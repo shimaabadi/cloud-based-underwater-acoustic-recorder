@@ -36,9 +36,12 @@ def upload_status(filename, is_fatal):
         if is_fatal:
             block_blob_service.create_blob_from_path('status', 'log.txt', 'log.txt')
 
+        return True
+
     except Exception as e:
         logger.write('Something went wrong when uploading a status file...')
         logger.write(str(e))
+        return False
 
 
 def update_status(is_recording, is_uploading, fatal_error):
@@ -78,6 +81,7 @@ def update_status(is_recording, is_uploading, fatal_error):
         longitude = '?'
         return
 
+    temp = '?'
     try:
         temp_sensor = MCP9808.MCP9808()
         online = temp_sensor.begin()

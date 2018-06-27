@@ -25,6 +25,7 @@ import status
 
 SAMPLING_RATE = 5000
 SAMPLING_SIZE = 8
+REMOVE_RECORDINGS = False
 
 file_timestamp = ''
 recording_succeeded = False
@@ -90,7 +91,7 @@ def record_sample(start, stop):
             start = time.time()
 
             os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
-            if os.path.isfile(path + '.flac'):
+            if os.path.isfile(path + '.flac') and REMOVE_RECORDINGS:
                 os.remove(path + '.wav')
             else:
                 logger.write('There was an error converting the file.')

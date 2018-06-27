@@ -21,6 +21,8 @@ import gpsutil
 import socket
 import status
 
+REMOVE_RECORDINGS = False
+
 
 # I stole this function from StackOverflow
 # This function will give false negatives if Google goes out of business.
@@ -87,7 +89,8 @@ def upload_recording(filename: str, config):
         logger.write('Upload Succeeded: ' + blob_name)
         logger.write('Upload took ' + str(elapsed) + ' seconds.\n')
 
-        os.remove(filename)
+        if REMOVE_RECORDINGS:
+            os.remove(filename)
 
     except Exception as e:
         logger.write('CheckConfig: There was an error uploading to the cloud.')
