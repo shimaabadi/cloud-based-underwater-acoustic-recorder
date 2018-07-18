@@ -7,11 +7,14 @@
 * schedule
 * azure
 * rpi-gpio
-## System
+## System (apt)
+* ppp
 * sox
 * arecord
 * gpsd
 * python-gps
+## System (special)
+* Hologram SDK
 
 ### GPIO Pin Documentation
 * GPIO Pin 12: Power
