@@ -91,10 +91,12 @@ def record_sample(start, stop):
             start = time.time()
 
             os.system('sox ' + path + '.wav ' + '-b '+ str(SAMPLING_SIZE) + ' -r ' + str(SAMPLING_RATE) + ' ' + path + '.flac')
-            if os.path.isfile(path + '.flac') and REMOVE_RECORDINGS:
-                os.remove(path + '.wav')
+            if os.path.isfile(path + '.flac'):
+                if REMOVE_RECORDINGS:
+                    os.remove(path + '.wav')
             else:
                 logger.write('There was an error converting the file.')
+                logger.write('A flac file wasn\'t created.')
                 return
 
             logger.write('Recording completed.')
