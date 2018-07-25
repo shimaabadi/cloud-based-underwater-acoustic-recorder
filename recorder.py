@@ -97,6 +97,8 @@ def record_sample(start, stop):
             else:
                 logger.write('There was an error converting the file.')
                 logger.write('A flac file wasn\'t created.')
+                GPIO.output(24, GPIO.LOW)
+                time.sleep(30)
                 return
 
             logger.write('Recording completed.')
