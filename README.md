@@ -17,9 +17,9 @@
 * Hologram SDK
 
 ### GPIO Pin Documentation
-* GPIO Pin 12: Power
-* GPIO Pin 16: Recording
-* GPIO Pin 20: Uploading
-* GPIO Pin 22: GPS Fix
-* GPIO Pin 23: Internet
+* GPIO Pin 27: Power (Green)
+* GPIO Pin 17: Recording (White)
+* GPIO Pin 16: Uploading (Blue)
+* GPIO Pin 22: GPS Fix (Red)
+* GPIO Pin 20: Internet (Yellow)
 * GPIO Pin 24: Amp Enable Line

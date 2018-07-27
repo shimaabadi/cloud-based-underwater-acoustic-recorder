@@ -22,7 +22,7 @@ import logger
 import status
 
 if __name__ == '__main__':
-    power_light = led.led(12) # GPIO 12 = Power LED
+    power_light = led.led(27) # GPIO 12 = Power LED
     power_light.on()
 
     try:

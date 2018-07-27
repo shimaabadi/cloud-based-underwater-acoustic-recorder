@@ -150,7 +150,7 @@ def record(recording_length, path):
     Perform a recording of the designated length and save it to the designated path.
     Returns true if the recording succeeds and false if there is an exception thrown.
     '''
-    recording_light = led.led(16) # GPIO 16 = Recording LED
+    recording_light = led.led(17) # GPIO 16 = Recording LED
     recording_light.on()
     try:
         os.system('arecord --device=hw:U22,0 --format S32_LE --rate 44100 --channels=2 --duration=' + str(recording_length) + ' ' + path + '.wav')

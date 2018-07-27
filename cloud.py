@@ -39,7 +39,7 @@ def progressCallback(current, total):
     print("Progress {0}/{1} ({2:.2f}%)".format(current, total, 100*current/total))
 
 def upload_recording(filename: str, config):
-    upload_light = led.led(20) # GPIO 20 is the Uploading indicator
+    upload_light = led.led(16) # GPIO 20 is the Uploading indicator
     upload_light.on()
 
     try:
@@ -113,7 +113,7 @@ def upload_recording(filename: str, config):
 
 def check_config():
     internet_connection = has_internet()
-    internet_light = led.led(23)
+    internet_light = led.led(20)
     if internet_connection:
         internet_light.on()
     else:
