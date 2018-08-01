@@ -154,7 +154,15 @@ def check_config():
             logger.write('Downloading new configuration.')
             blob_service.get_blob_to_path('configuration', 'config.ini', 'config.ini')
             logger.write('Rebooting...')
+
             #TODO: Clean-up step
+            power = led.led(27)
+            gps = led.led(22)
+            internet = led.led(20)
+            power.off()
+            gps.off()
+            internet.off()
+
             os.system('sudo reboot')
         else:
             logger.write('No new configuration found.')
