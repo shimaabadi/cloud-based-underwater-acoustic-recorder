@@ -8,3 +8,4 @@ __pycache__/*
 upload_config.py
 log.txt
 status.ini
+recording_loop.py
